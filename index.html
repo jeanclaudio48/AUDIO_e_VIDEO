@@ -217,6 +217,13 @@ nav button[aria-selected=true]{background:rgba(24,160,148,.2);box-shadow:inset 0
 nav button,.gear,#add,.tiles button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 nav button *{pointer-events:none}
 nav button{min-height:52px}
+.dz{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:14px 0 4px}
+.dz>div{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:20px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.dz i{flex:0 0 46px;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:1rem;background:var(--amb);color:#2b1c00;box-shadow:0 6px 14px -6px rgba(0,0,0,.5)}
+.dz span{min-width:0;font-size:.78rem;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.82);line-height:1.2}
+.dz b{display:block;margin-top:2px;font-size:1.2rem;font-weight:800;letter-spacing:-.01em;color:#fff;line-height:1.2;overflow-wrap:anywhere}
+.dz .vz{opacity:.65}.dz .vz i{background:rgba(255,255,255,.22);color:#fff;box-shadow:none}
+.dz .vz b{font-size:1rem;font-weight:600}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 </head>
@@ -294,9 +301,10 @@ function bindSearch(){var s=$("q");if(s)s.oninput=function(){q=s.value;var p=s.s
 
 function ic(p){return"<svg viewBox='0 0 24 24' width='24' height='24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'>"+p+"</svg>"}
 /* início */
+function ini(n){var p=String(n).trim().split(/\s+/);return(p[0].charAt(0)+(p.length>1?p[p.length-1].charAt(0):"")).toUpperCase()}
 function vHome(m){
  var t=today(),l=S.des.slice().sort(function(a,b){return a.date<b.date?-1:1}).filter(function(d){return d.date>=t}),nx=l[0],c=S.chk[0],h="<div class='sr'><input id='hq' type='search' placeholder='Buscar um problema ou dúvida…' aria-label='Buscar nas dúvidas'></div>";
- if(nx)h+="<div class='nx'><small>Próxima reunião</small><div class='nt'>"+E(fd(nx.date))+"</div><span class='tag'>"+E(nx.type)+"</span><div class='roles'>"+ROLES.map(function(r){return"<div>"+r[1]+"<b>"+E(nx[r[0]]||"—")+"</b></div>"}).join("")+"</div><button class='btn' data-go='des'>Ver escala completa</button></div>";
+ if(nx)h+="<div class='nx'><small>Próxima reunião</small><div class='nt'>"+E(fd(nx.date))+"</div><span class='tag'>"+E(nx.type)+"</span><div class='dz'>"+ROLES.map(function(r){var v=nx[r[0]];return"<div"+(v?"":" class='vz'")+"><i>"+(v?E(ini(v)):"?")+"</i><span>"+r[1]+"<b>"+(v?E(v):"Sem designação")+"</b></span></div>"}).join("")+"</div><button class='btn' data-go='des'>Ver escala completa</button></div>";
  else h+="<div class='nx'><small>Próxima reunião</small><div class='nt'>Nenhuma designação</div><p>Cadastre a escala e ela aparece aqui.</p><button class='btn' data-go='des'>Abrir escala</button></div>";
  if(c){var n=c.items.filter(function(i){return i[1]}).length,p=c.items.length?Math.round(n/c.items.length*100):0;h+="<div class='card'><div class='row'><b>"+E(c.t)+"</b><b style='color:var(--ac)'>"+p+"%</b></div><div class='prog'><i style='width:"+p+"%'></i></div><div class='row' style='align-items:center'><small style='color:var(--mut)'>"+n+" de "+c.items.length+" itens"+"</small><button class='btn g s' data-go='chk'>Abrir checklist</button></div></div>"}
  h+="<div class='tiles'><button data-go='des'><b>"+l.length+"</b>reuniões à frente</button><button data-go='man'><b>"+S.man.length+"</b>manuais</button><button data-go='faq'><b>"+S.faq.length+"</b>dúvidas</button></div>";
