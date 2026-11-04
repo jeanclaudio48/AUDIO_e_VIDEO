@@ -224,6 +224,14 @@ nav button{min-height:52px}
 .dz b{display:block;margin-top:2px;font-size:1.2rem;font-weight:800;letter-spacing:-.01em;color:#fff;line-height:1.2;overflow-wrap:anywhere}
 .dz .vz{opacity:.65}.dz .vz i{background:rgba(255,255,255,.22);color:#fff;box-shadow:none}
 .dz .vz b{font-size:1rem;font-weight:600}
+.dz{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.dz>div{gap:9px;padding:10px 11px;border-radius:18px}
+.dz i{flex:0 0 36px;width:36px;height:36px;font-size:.85rem}
+.dz span{font-size:.7rem}
+.dz b{font-size:1rem}
+.dz .vz b{font-size:.85rem}
+@media (max-width:640px){.dz{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.nt{text-transform:none}.nt::first-letter{text-transform:uppercase}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
