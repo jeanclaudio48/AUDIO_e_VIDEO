@@ -329,7 +329,7 @@ function start(){render();sync();subscribe()}
 $("lf").onsubmit=async function(e){
  e.preventDefault();$("lerr").textContent="";
  var r=await sb.auth.signInWithPassword({email:$("le").value.trim(),password:$("lp").value});
- if(r.error){$("lerr").textContent="E-mail ou senha incorretos.";return}
+ if(r.error){$("lerr").textContent=r.error.message;return}
  $("login").classList.remove("o");start()};
 window.addEventListener("online",function(){if(sb)save()});
 function boot(){
