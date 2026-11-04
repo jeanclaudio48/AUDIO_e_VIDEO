@@ -169,7 +169,7 @@ nav button span{display:grid;place-items:center;height:26px;font-size:0}
 <header class="hero"><div class="in"><div><p id="hi"></p><h1>Som e Vídeo</h1></div><button class="gear" id="gear" aria-label="Backup e ajustes"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button><svg class="art" viewBox="0 0 120 90" width="112" aria-hidden="true"><path d="M38 14q22-14 44 0M28 6q32-20 64 0" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-linecap="round"/><rect x="4" y="22" width="112" height="64" rx="13" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.6)" stroke-width="2"/><g fill="rgba(255,255,255,.5)"><rect x="18.5" y="32" width="3" height="44" rx="1.5"/><rect x="38.5" y="32" width="3" height="44" rx="1.5"/><rect x="58.5" y="32" width="3" height="44" rx="1.5"/><rect x="78.5" y="32" width="3" height="44" rx="1.5"/><rect x="98.5" y="32" width="3" height="44" rx="1.5"/></g><g fill="#f5a524"><rect x="12" y="40" width="16" height="9" rx="3"/><rect x="32" y="58" width="16" height="9" rx="3"/><rect x="52" y="46" width="16" height="9" rx="3"/><rect x="72" y="62" width="16" height="9" rx="3"/><rect x="92" y="36" width="16" height="9" rx="3"/></g></svg></div></header>
 <nav role="tablist" id="nav"></nav>
 <main id="main"></main>
-<div id="login"><div class="lb"><h2>Entrar</h2><p>Acesso da equipe de áudio e vídeo.</p>
+<div id="login"><div class="lb"><h2>Entrar</h2><p>Acesso da equipe de áudio e vídeo. <small>(versão 2)</small></p>
 <form id="lf"><label for="le">E-mail</label><input id="le" type="email" autocomplete="username" required>
 <label for="lp">Senha</label><input id="lp" type="password" autocomplete="current-password" required>
 <p id="lerr" role="alert"></p><button class="btn" style="width:100%">Entrar</button></form></div></div>
@@ -329,7 +329,7 @@ function start(){render();sync();subscribe()}
 $("lf").onsubmit=async function(e){
  e.preventDefault();$("lerr").textContent="";
  var r=await sb.auth.signInWithPassword({email:$("le").value.trim(),password:$("lp").value});
- if(r.error){$("lerr").textContent=r.error.message;return}
+ if(r.error){$("lerr").textContent="Erro: "+r.error.message;return}
  $("login").classList.remove("o");start()};
 window.addEventListener("online",function(){if(sb)save()});
 function boot(){
