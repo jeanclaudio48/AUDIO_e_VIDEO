@@ -361,8 +361,9 @@ function vChk(m){
 }
 
 /* manuais e perguntas (mesma estrutura) */
+function norm(t){return String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 function vList(m,key,tf,bf,ph,addL,emp){
- var s=q.toLowerCase(),l=S[key].filter(function(x){return(x[tf]+" "+x[bf]).toLowerCase().indexOf(s)>-1});
+ var ws=norm(q).split(/\s+/).filter(Boolean),l=S[key].filter(function(x){var h=norm(x[tf]+" "+x[bf]);return ws.every(function(w){return h.indexOf(w)>-1})});
  var h="<div class='bar'><button class='btn' id='add'>"+addL+"</button></div>"+search(ph);
  if(!l.length)h+="<div class='empty'>"+(q?"Nada encontrado para essa busca.":emp)+"</div>";
  l.forEach(function(x){h+="<details"+(q?" open":"")+"><summary>"+E(x[tf])+"</summary><div class='in'>"+E(x[bf])+"<div class='acts' style='margin-top:12px'><button class='btn g s' data-a='ed' data-i='"+x.id+"'>Editar</button><button class='btn d s' data-a='dl' data-i='"+x.id+"'>Excluir</button></div></div></details>"});
