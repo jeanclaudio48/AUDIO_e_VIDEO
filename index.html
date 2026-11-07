@@ -236,6 +236,14 @@ nav button{min-height:52px}
 .mi:first-of-type{margin-top:8px}
 .mi span{color:var(--ac);font-weight:700;text-align:right}
 .dz .me{border-color:var(--amb);box-shadow:0 0 0 2px var(--amb),inset 0 1px 0 rgba(255,255,255,.3)}
+body.ro #add,body.ro [data-a="ed"],body.ro [data-a="dl"],body.ro [data-a="ei"],body.ro [data-a="rn"],body.ro [data-a="rm"],body.ro #im,body.ro #eqa,body.ro #eqi,body.ro [data-eqrm]{display:none!important}
+body.ro #hi::after,body.adm #hi::after{display:inline-block;margin-left:8px;padding:1px 9px;border-radius:999px;font-size:.72rem;font-weight:700;vertical-align:middle}
+body.ro #hi::after{content:"Somente visualização";background:rgba(255,255,255,.2)}
+body.adm #hi::after{content:"Administrador";background:var(--amb);color:#2b1c00}
+#adm{display:none}#adm.o{display:block}
+.lb .rem{display:flex;align-items:center;gap:8px;font-size:.85rem;margin:10px 0 0}
+.lb .rem input{width:18px;height:18px;padding:0;flex:0 0 18px}
+#admb{display:block;margin:14px auto 0;padding:6px 10px;border:0;background:none;color:rgba(255,255,255,.85);font:inherit;font-size:.85rem;text-decoration:underline;cursor:pointer}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
@@ -253,14 +261,14 @@ nav button{min-height:52px}
 <div id="login"><i class="bl b1"></i><i class="bl b2"></i><i class="bl b3"></i><div class="lb"><div class="lg"><svg viewBox="0 0 48 48" width="36" height="36" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 8v32M24 8v32M36 8v32"/><rect x="7" y="14" width="10" height="6" rx="2" fill="#f5a524" stroke="none"/><rect x="19" y="28" width="10" height="6" rx="2" fill="#f5a524" stroke="none"/><rect x="31" y="18" width="10" height="6" rx="2" fill="#f5a524" stroke="none"/></svg></div><h2>Áudio e Vídeo</h2><p>Acesso da equipe do salão</p>
 <form id="lf"><label for="le">E-mail</label><input id="le" type="email" autocomplete="username" placeholder="seu@email.com" required>
 <label for="lp">Senha</label><div class="pw"><input id="lp" type="password" autocomplete="current-password" placeholder="Sua senha" required><button type="button" id="eye">Mostrar</button></div>
-<p id="lerr" role="alert"></p><button class="lbtn">Entrar</button></form></div></div>
+<div id="adm"><label for="lc">Código de administrador</label><input id="lc" type="password" autocomplete="off" placeholder="Código"><label class="rem"><input type="checkbox" id="lr"> Lembrar neste aparelho</label></div><p id="lerr" role="alert"></p><button class="lbtn">Entrar</button></form><button type="button" id="admb">Sou administrador</button></div></div>
 <div id="toast" role="status"></div>
 <div id="ov"><div id="box" role="dialog" aria-modal="true"></div></div>
 <script>
 /* ===== CONFIGURAÇÃO DO SUPABASE: cole seus dados aqui ===== */
 var SUPABASE_URL="https://kewwkbfxobcsocndimre.supabase.co",SUPABASE_KEY="sb_publishable_7Xdo-CNWEgSvzK1SvuptpQ_r2838YNZ";
 /* =========================================================== */
-var KEYS=["des","chk","man","faq","eq"],snap={},sb=null;
+var KEYS=["des","chk","man","faq","eq"],snap={},sb=null,canEdit=true,adminCode="";
 var KEY="sav-salao-v1",TABS=[["home","<span>"+ic("<path d='M4 11l8-7 8 7'/><path d='M6 10v10h12V10'/><path d='M10 20v-5h4v5'/>")+"</span>Início"],["des","<span>"+ic("<rect x='4' y='5' width='16' height='15' rx='3'/><path d='M4 10h16M9 3v4M15 3v4'/>")+"</span>Escala"],["chk","<span>"+ic("<rect x='5' y='4' width='14' height='17' rx='3'/><path d='M9 12l2 2 4-4'/>")+"</span>Checklists"],["man","<span>"+ic("<path d='M12 6c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-13c-3-.5-6 0-8 1.5z'/><path d='M12 6v13'/>")+"</span>Manuais"],["faq","<span>"+ic("<circle cx='12' cy='12' r='9'/><path d='M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01'/>")+"</span>Dúvidas"]],tab="home",q="";
 var ROLES=[["som","Som"],["video","Vídeo / Zoom"],["mic1","Microfone 1"],["mic2","Microfone 2"]];
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
@@ -276,7 +284,7 @@ faq:[
 var S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S||!S.des)S=seed();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
- if(sb)KEYS.forEach(function(k){if(JSON.stringify(S[k])!==snap[k])push(k)})}
+ if(sb&&canEdit)KEYS.forEach(function(k){if(JSON.stringify(S[k])!==snap[k])push(k)})}
 function E(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function $(i){return document.getElementById(i)}
 function fd(d){try{return new Date(d+"T12:00").toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"})}catch(e){return d}}
@@ -299,7 +307,7 @@ function close(){$("ov").classList.remove("o")}
 $("ov").addEventListener("click",function(e){if(e.target==this)close()});
 document.addEventListener("keydown",function(e){if(e.key=="Escape")close()});
 function confirmDel(msg,fn){$("box").innerHTML="<h2>"+E(msg)+"</h2><div class='bar' style='margin-top:16px'><button class='btn d' id='ok'>Excluir</button><button class='btn g' id='cx'>Cancelar</button></div>";$("ov").classList.add("o");$("cx").onclick=close;$("ok").onclick=function(){fn();close()}}
-function mut(fn){fn();save();render()}
+function mut(fn){if(!canEdit){toast("Somente o administrador pode alterar.");render();return}fn();save();render()}
 
 /* abas */
 function nav(){var n=$("nav");
@@ -350,6 +358,14 @@ function eqBind(m){
  $("eqa").onclick=function(){modal("Adicionar à equipe",[{k:"n",l:"Nome (vários: separe por vírgula)"}],{},function(o){var l=o.n.split(/[,\n]/).map(function(x){return x.trim()}).filter(Boolean);if(!l.length)return false;mut(function(){l.forEach(function(n){if(!S.eq.some(function(x){return norm(x.n)==norm(n)}))S.eq.push({id:uid(),n:n})})})})};
  $("eqi").onclick=function(){var l=[];S.des.forEach(function(d){ROLES.forEach(function(r){var v=String(d[r[0]]||"").trim();if(v&&l.indexOf(v)<0&&!S.eq.some(function(x){return norm(x.n)==norm(v)}))l.push(v)})});if(!l.length){toast("Nenhum nome novo nas designações.");return}mut(function(){l.forEach(function(n){S.eq.push({id:uid(),n:n})})})};
  m.onclick=function(e){var r=e.target.closest("[data-eqrm]");if(r){var id=r.getAttribute("data-eqrm");mut(function(){S.eq=S.eq.filter(function(x){return x.id!=id})})}}}
+function accCard(){
+ if(!sb)return"";
+ return"<div class='card'><div class='row' style='align-items:center'><div><b>Acesso</b><p style='color:var(--mut);margin:2px 0 0'>"+(canEdit?"Você está como administrador e pode editar e excluir.":"Você está em modo somente visualização.")+"</p></div><button class='btn "+(canEdit?"d":"")+" s' id='acb'>"+(canEdit?"Sair do modo administrador":"Entrar como administrador")+"</button></div></div>"}
+function accBind(){var b=$("acb");if(!b)return;b.onclick=function(){
+ if(canEdit){lock();return}
+ modal("Modo administrador",[{k:"c",l:"Código de administrador",t:"password"},{k:"r",l:"Lembrar neste aparelho?",t:"sel",o:["Não","Sim"]}],{},function(o){
+  if(!o.c.trim())return false;
+  unlock(o.c.trim(),o.r=="Sim").then(function(ok){if(ok)render();else toast("Código de administrador incorreto.")})},"Entrar")}}
 /* designações */
 var DF=[{k:"date",l:"Data",t:"date"},{k:"type",l:"Reunião",t:"sel",o:["Meio de semana","Fim de semana","Assembleia","Especial","Outra"]}].concat(ROLES.map(function(r){return{k:r[0],l:r[1]}}));
 function vDes(m){
@@ -375,9 +391,9 @@ function vChk(m){
  m.innerHTML=h;
  $("add").onclick=function(){modal("Nova checklist",[{k:"t",l:"Nome"}],{},function(o){if(!o.t.trim())return false;mut(function(){S.chk.push({id:uid(),t:o.t,items:[]})})})};
  m.onclick=function(e){var a=e.target.getAttribute("data-a"),i=e.target.getAttribute("data-i"),k=e.target.getAttribute("data-k");if(!a)return;var c=S.chk.filter(function(x){return x.id==i})[0];
-  if(a=="tg")mut(function(){c.items[k][1]=e.target.checked?1:0});
+  if(a=="tg")mutC(function(){c.items[k][1]=e.target.checked?1:0});
   if(a=="rm")mut(function(){c.items.splice(k,1)});
-  if(a=="rs")mut(function(){c.items.forEach(function(x){x[1]=0})});
+  if(a=="rs")modal("Reiniciar a checklist?",[],{},function(){mutC(function(){c.items.forEach(function(x){x[1]=0})})},"Reiniciar");
   if(a=="ei")modal("Novo item",[{k:"t",l:"Tarefa"}],{},function(o){if(!o.t.trim())return false;mut(function(){c.items.push([o.t,0])})});
   if(a=="rn")modal("Renomear",[{k:"t",l:"Nome"}],c,function(o){if(!o.t.trim())return false;mut(function(){c.t=o.t})});
   if(a=="dl")confirmDel("Excluir a checklist “"+c.t+"”?",function(){mut(function(){S.chk=S.chk.filter(function(x){return x.id!=i})})})}
@@ -403,7 +419,7 @@ function vFaq(m){vList(m,"faq","q","a","Buscar perguntas","Nova pergunta","Nenhu
 /* backup */
 function vBkp(m){
  m.innerHTML="<div class='card'><b>Backup dos dados</b><p style='color:var(--mut)'>"+(sb?"Os dados ficam salvos online e são compartilhados com a equipe. Gere um backup de vez em quando como cópia de segurança.":"Os dados ficam salvos neste aparelho e navegador. Para guardar uma cópia ou levar para outro aparelho, copie o texto do backup e cole-o depois na restauração.")+"</p><div class='acts'><button class='btn' id='ex'>Gerar backup</button><button class='btn g' id='im'>Restaurar backup</button><button class='btn g' id='th'>Alternar tema claro/escuro</button>"+(sb?"<button class='btn d' id='lo'>Sair da conta</button>":"")+"</div></div>";
- m.insertAdjacentHTML("afterbegin",eqCard());eqBind(m);
+ m.insertAdjacentHTML("afterbegin",accCard()+eqCard());eqBind(m);accBind();
  $("ex").onclick=function(){modal("Backup",[{k:"x",l:"Copie todo este texto e guarde",t:"area"}],{x:JSON.stringify(S)})};
  $("lo")&&($("lo").onclick=function(){sb.auth.signOut().then(function(){location.reload()})});
  $("im").onclick=function(){modal("Restaurar backup",[{k:"x",l:"Cole aqui o texto do backup",t:"area"}],{},function(o){try{var d=JSON.parse(o.x);if(!d.des||!d.chk||!d.man||!d.faq)throw 0;S=d;save();render()}catch(e){alert("Backup inválido. Confira se copiou o texto inteiro.");return false}},"Restaurar")};
@@ -412,9 +428,26 @@ function vBkp(m){
 /* ===== Supabase ===== */
 function toast(m){var t=$("toast");t.textContent=m;t.classList.add("o");clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove("o")},3500)}
 async function push(k){
- var j=JSON.stringify(S[k]),r=await sb.from("app_state").upsert({id:k,data:S[k],updated_at:new Date().toISOString()});
- if(r.error){toast("Sem conexão. A alteração será enviada depois.");return}
+ if(!canEdit)return;
+ var j=JSON.stringify(S[k]),r=await sb.rpc("salvar_estado",{p_id:k,p_data:S[k],p_codigo:adminCode});
+ if(r.error){if(/codigo invalido/i.test(r.error.message)){lock();toast("Código de administrador inválido. Voltando ao modo visualização.")}else toast("Sem conexão. A alteração será enviada depois.");return}
  snap[k]=j}
+function mutC(fn){
+ if(canEdit||!sb){mut(fn);return}
+ fn();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render();pushChk()}
+async function pushChk(){
+ var j=JSON.stringify(S.chk),r=await sb.rpc("marcar_checklist",{p_data:S.chk});
+ if(r.error){if(/estrutura invalida/i.test(r.error.message)){toast("A checklist foi atualizada por outra pessoa. Atualizando…");sync()}else toast("Sem conexão. A alteração não foi enviada.");return}
+ snap.chk=j}
+function modeUI(){document.body.classList.toggle("ro",!!sb&&!canEdit);document.body.classList.toggle("adm",!!sb&&canEdit)}
+function lock(){canEdit=false;adminCode="";try{localStorage.removeItem("sav-adm")}catch(e){}modeUI();render()}
+async function unlock(code,keep){
+ var r=await sb.rpc("eh_admin",{codigo:code});
+ if(r.error){toast("Configuração do Supabase incompleta. Rode o SQL do administrador.");return false}
+ if(r.data!==true)return false;
+ adminCode=code;canEdit=true;
+ if(keep){try{localStorage.setItem("sav-adm",code)}catch(e){}}
+ modeUI();return true}
 async function sync(){
  var r=await sb.from("app_state").select("id,data");
  if(r.error){toast("Não foi possível carregar os dados online.");return}
@@ -430,18 +463,25 @@ function subscribe(){
   S[r.id]=r.data;snap[r.id]=j;
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
   render()}).subscribe()}
-function start(){$("out").hidden=false;render();sync();subscribe()}
+async function start(){
+ $("out").hidden=false;
+ if(!canEdit){var c="";try{c=localStorage.getItem("sav-adm")||""}catch(e){}
+  if(c&&!(await unlock(c,true))){try{localStorage.removeItem("sav-adm")}catch(e){}}}
+ modeUI();render();sync();subscribe()}
 $("out").onclick=function(){modal("Sair da conta?",[],{},function(){sb.auth.signOut().then(function(){location.reload()})},"Sair")};
 $("eye").onclick=function(){var i=$("lp"),h=i.type=="password";i.type=h?"text":"password";this.textContent=h?"Ocultar":"Mostrar"};
 $("lf").onsubmit=async function(e){
  e.preventDefault();$("lerr").textContent="";
  var r=await sb.auth.signInWithPassword({email:$("le").value.trim(),password:$("lp").value});
- if(r.error){$("lerr").textContent="Erro: "+r.error.message;return}
- $("login").classList.remove("o");start()};
+ if(r.error){$("lerr").textContent=/invalid login/i.test(r.error.message)?"E-mail ou senha incorretos.":"Erro: "+r.error.message;return}
+ var code=$("adm").classList.contains("o")?$("lc").value.trim():"";
+ if(code&&!(await unlock(code,$("lr").checked))){$("lerr").textContent="Código de administrador incorreto.";return}
+ $("lc").value="";$("login").classList.remove("o");start()};
+$("admb").onclick=function(){var a=$("adm");a.classList.toggle("o");var on=a.classList.contains("o");this.textContent=on?"Entrar só para visualizar":"Sou administrador";if(on)$("lc").focus()};
 window.addEventListener("online",function(){if(sb)save()});
 function boot(){
  if(SUPABASE_URL.indexOf("COLE_AQUI")==0||typeof supabase=="undefined"){render();return}
- sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);canEdit=false;
  sb.auth.getSession().then(function(r){if(r.data.session)start();else $("login").classList.add("o")})}
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
 boot();
