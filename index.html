@@ -322,12 +322,10 @@ function ic(p){return"<svg viewBox='0 0 24 24' width='24' height='24' fill='none
 /* início */
 function ini(n){var p=String(n).trim().split(/\s+/);return(p[0].charAt(0)+(p.length>1?p[p.length-1].charAt(0):"")).toUpperCase()}
 function vHome(m){
- var t=today(),l=S.des.slice().sort(function(a,b){return a.date<b.date?-1:1}).filter(function(d){return d.date>=t}),nx=l[0],c=S.chk[0],h="<div class='sr'><input id='hq' type='search' placeholder='Buscar um problema ou dúvida…' aria-label='Buscar nas dúvidas'></div>";
+ var t=today(),l=S.des.slice().sort(function(a,b){return a.date<b.date?-1:1}).filter(function(d){return d.date>=t}),nx=l[0],h="<div class='sr'><input id='hq' type='search' placeholder='Buscar um problema ou dúvida…' aria-label='Buscar nas dúvidas'></div>";
  if(nx)h+="<div class='nx'><small>Próxima reunião</small><div class='nt'>"+E(fd(nx.date))+"</div><span class='tag'>"+E(nx.type)+"</span><div class='dz'>"+ROLES.map(function(r){var v=nx[r[0]];return"<div"+(v?(v==getEu()?" class='me'":""):" class='vz'")+"><i>"+(v?E(ini(v)):"?")+"</i><span>"+r[1]+"<b>"+(v?E(v):"Sem designação")+"</b></span></div>"}).join("")+"</div><button class='btn' data-go='des'>Ver escala completa</button></div>";
  else h+="<div class='nx'><small>Próxima reunião</small><div class='nt'>Nenhuma designação</div><p>Cadastre a escala e ela aparece aqui.</p><button class='btn' data-go='des'>Abrir escala</button></div>";
  h+=myCard(l);
- if(c){var n=c.items.filter(function(i){return i[1]}).length,p=c.items.length?Math.round(n/c.items.length*100):0;h+="<div class='card'><div class='row'><b>"+E(c.t)+"</b><b style='color:var(--ac)'>"+p+"%</b></div><div class='prog'><i style='width:"+p+"%'></i></div><div class='row' style='align-items:center'><small style='color:var(--mut)'>"+n+" de "+c.items.length+" itens"+"</small><button class='btn g s' data-go='chk'>Abrir checklist</button></div></div>"}
- h+="<div class='tiles'><button data-go='des'><b>"+l.length+"</b>reuniões à frente</button><button data-go='man'><b>"+S.man.length+"</b>manuais</button><button data-go='faq'><b>"+S.faq.length+"</b>dúvidas</button></div>";
  m.innerHTML=h;
  var se=$("eu");if(se)se.onchange=function(){setEu(this.value=="—"?"":this.value);render()};
  $("hq").onkeydown=function(e){if(e.key=="Enter"){q=this.value;tab="faq";render()}};
