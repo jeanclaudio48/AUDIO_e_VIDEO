@@ -418,7 +418,7 @@ function vBkp(m){
  m.innerHTML="<div class='card'><b>Backup dos dados</b><p style='color:var(--mut)'>"+(sb?"Os dados ficam salvos online e são compartilhados com a equipe. Gere um backup de vez em quando como cópia de segurança.":"Os dados ficam salvos neste aparelho e navegador. Para guardar uma cópia ou levar para outro aparelho, copie o texto do backup e cole-o depois na restauração.")+"</p><div class='acts'><button class='btn' id='ex'>Gerar backup</button><button class='btn g' id='im'>Restaurar backup</button><button class='btn g' id='th'>Alternar tema claro/escuro</button>"+(sb?"<button class='btn d' id='lo'>Sair da conta</button>":"")+"</div></div>";
  m.insertAdjacentHTML("afterbegin",accCard()+eqCard());eqBind(m);accBind();
  $("ex").onclick=function(){modal("Backup",[{k:"x",l:"Copie todo este texto e guarde",t:"area"}],{x:JSON.stringify(S)})};
- $("lo")&&($("lo").onclick=function(){sb.auth.signOut().then(function(){location.reload()})});
+ $("lo")&&($("lo").onclick=function(){sb.auth.signOut({scope:"local"}).then(function(){location.reload()})});
  $("im").onclick=function(){modal("Restaurar backup",[{k:"x",l:"Cole aqui o texto do backup",t:"area"}],{},function(o){try{var d=JSON.parse(o.x);if(!d.des||!d.chk||!d.man||!d.faq)throw 0;S=d;save();render()}catch(e){alert("Backup inválido. Confira se copiou o texto inteiro.");return false}},"Restaurar")};
  $("th").onclick=function(){var r=document.documentElement,dk=r.getAttribute("data-theme")=="dark"||(r.getAttribute("data-theme")!="light"&&matchMedia("(prefers-color-scheme:dark)").matches);r.setAttribute("data-theme",dk?"light":"dark")}
 }
@@ -465,7 +465,7 @@ async function start(){
  if(!canEdit){var c="";try{c=localStorage.getItem("sav-adm")||""}catch(e){}
   if(c&&!(await unlock(c,true))){try{localStorage.removeItem("sav-adm")}catch(e){}}}
  modeUI();render();sync();subscribe()}
-$("out").onclick=function(){modal("Sair da conta?",[],{},function(){sb.auth.signOut().then(function(){location.reload()})},"Sair")};
+$("out").onclick=function(){modal("Sair da conta?",[],{},function(){sb.auth.signOut({scope:"local"}).then(function(){location.reload()})},"Sair")};
 $("eye").onclick=function(){var i=$("lp"),h=i.type=="password";i.type=h?"text":"password";this.textContent=h?"Ocultar":"Mostrar"};
 $("lf").onsubmit=async function(e){
  e.preventDefault();$("lerr").textContent="";
